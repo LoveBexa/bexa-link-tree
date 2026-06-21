@@ -91,9 +91,17 @@
     }
   }
 
+  function clearWindowPositionStyles(windowEl) {
+    windowEl.style.left = "";
+    windowEl.style.top = "";
+    windowEl.style.width = "";
+    windowEl.style.zIndex = "";
+  }
+
   function restoreWindow(windowEl) {
     windowEl.classList.remove("is-maximized");
     restoreWindowPlacement(windowEl);
+    clearWindowPositionStyles(windowEl);
 
     const maxBtn = windowEl.querySelector(".bx-window-btn-maximize");
     if (maxBtn) maxBtn.textContent = "□";
@@ -111,7 +119,7 @@
     }
 
     rememberWindowPlacement(windowEl);
-    document.body.appendChild(windowEl);
+    clearWindowPositionStyles(windowEl);
 
     windowEl.classList.remove("is-minimized");
     windowEl.classList.add("is-maximized");
@@ -120,7 +128,10 @@
     const maxBtn = windowEl.querySelector(".bx-window-btn-maximize");
     if (maxBtn) maxBtn.textContent = "❐";
 
-    getBackdrop().hidden = false;
+    const backdropEl = getBackdrop();
+    backdropEl.hidden = false;
+    document.body.appendChild(backdropEl);
+    document.body.appendChild(windowEl);
     document.body.classList.add("bx-has-maximized");
   }
 
@@ -195,335 +206,4 @@
       closeStartMenu();
     }
   });
-
-  /* About page — scattered desktop windows + drag */
-  const aboutGrid = document.querySelector(".bx-page-about .bx-about-grid");
-  const SCATTER_BREAKPOINT = "(min-width: 720px)";
-
-  if (aboutGrid) {
-    const scatterMq = window.matchMedia(SCATTER_BREAKPOINT);
-    const SCATTER_PADDING = 20;
-    const SCATTER_GAP = 40;
-    const SCATTER_MAX_JITTER = 10;
-    const SCATTER_MAX_ROTATE = 1;
-    const SCATTER_MIN_GAP = 28;
-    let dragState = null;
-    let resizeTimer = null;
-
-    function getAboutWindows() {
-      return Array.from(aboutGrid.querySelectorAll(".bx-window"));
-    }
-
-    function bringWindowToFront(windowEl) {
-      const windows = getAboutWindows().filter(function (w) {
-        return !w.classList.contains("is-closed");
-      });
-      const maxZ = windows.reduce(function (max, w) {
-        return Math.max(max, parseInt(w.style.zIndex, 10) || 10);
-      }, 10);
-      windowEl.style.zIndex = String(maxZ + 1);
-    }
-
-    function clampWindowPosition(windowEl) {
-      const padding = 12;
-      const gridWidth = aboutGrid.clientWidth;
-      const gridHeight = aboutGrid.clientHeight;
-      const width = windowEl.offsetWidth;
-      const height = windowEl.offsetHeight;
-      let left = parseFloat(windowEl.style.left) || 0;
-      let top = parseFloat(windowEl.style.top) || 0;
-
-      left = Math.max(padding, Math.min(left, gridWidth - width - padding));
-      top = Math.max(padding, Math.min(top, gridHeight - height - padding));
-
-      windowEl.style.left = left + "px";
-      windowEl.style.top = top + "px";
-    }
-
-    function updateScatterHeight() {
-      if (!aboutGrid.classList.contains("bx-about-scatter")) return;
-
-      let maxBottom = 0;
-      getAboutWindows().forEach(function (windowEl) {
-        if (windowEl.classList.contains("is-closed")) return;
-        const top = parseFloat(windowEl.style.top) || 0;
-        maxBottom = Math.max(maxBottom, top + windowEl.offsetHeight);
-      });
-
-      aboutGrid.style.minHeight = Math.max(window.innerHeight * 0.72, maxBottom + 24) + "px";
-    }
-
-    function clearScatterStyles() {
-      aboutGrid.classList.remove("bx-about-scatter");
-      aboutGrid.style.minHeight = "";
-      getAboutWindows().forEach(function (windowEl) {
-        windowEl.style.left = "";
-        windowEl.style.top = "";
-        windowEl.style.zIndex = "";
-        windowEl.style.removeProperty("--bx-window-rotate");
-      });
-    }
-
-    function getWindowRect(left, top, windowEl) {
-      return {
-        left: left,
-        top: top,
-        width: windowEl.offsetWidth,
-        height: windowEl.offsetHeight,
-      };
-    }
-
-    function rectsOverlap(a, b, gap) {
-      return !(
-        a.left + a.width + gap <= b.left ||
-        b.left + b.width + gap <= a.left ||
-        a.top + a.height + gap <= b.top ||
-        b.top + b.height + gap <= a.top
-      );
-    }
-
-    function buildScatterLayout(windows, gridWidth) {
-      const sizes = windows.map(function (windowEl) {
-        return {
-          el: windowEl,
-          width: windowEl.offsetWidth || 320,
-          height: windowEl.offsetHeight || 240,
-        };
-      });
-
-      if (sizes.length === 0) return [];
-
-      const rotations = [-0.8, 0.9, 0.6, -0.7];
-      const rowOffsets = [0, 10, 0, 8];
-      const placements = [];
-
-      function addPlacement(index, left, top) {
-        const size = sizes[index];
-        if (!size) return;
-
-        placements.push({
-          el: size.el,
-          left: left,
-          top: top,
-          rotate: rotations[index] || 0,
-          width: size.width,
-          height: size.height,
-        });
-      }
-
-      if (sizes.length >= 4 && gridWidth >= 720) {
-        const topRowWidth = sizes[0].width + SCATTER_GAP + sizes[1].width;
-        const bottomRowWidth = sizes[2].width + SCATTER_GAP + sizes[3].width;
-        const fitsTwoColumns =
-          topRowWidth <= gridWidth - SCATTER_PADDING * 2 &&
-          bottomRowWidth <= gridWidth - SCATTER_PADDING * 2;
-
-        if (fitsTwoColumns) {
-          const topStartX = Math.max(SCATTER_PADDING, (gridWidth - topRowWidth) / 2);
-          const bottomStartX = Math.max(SCATTER_PADDING, (gridWidth - bottomRowWidth) / 2);
-
-          addPlacement(0, topStartX, SCATTER_PADDING);
-          addPlacement(1, topStartX + sizes[0].width + SCATTER_GAP, SCATTER_PADDING + rowOffsets[1]);
-
-          const rowBreak = Math.max(
-            SCATTER_PADDING + sizes[0].height + rowOffsets[0],
-            SCATTER_PADDING + rowOffsets[1] + sizes[1].height
-          );
-
-          addPlacement(2, bottomStartX, rowBreak + SCATTER_GAP);
-          addPlacement(
-            3,
-            bottomStartX + sizes[2].width + SCATTER_GAP,
-            rowBreak + SCATTER_GAP + rowOffsets[3]
-          );
-        }
-      }
-
-      if (placements.length === 0) {
-        let currentTop = SCATTER_PADDING;
-        sizes.forEach(function (size, index) {
-          const stagger = index % 2 === 1 ? Math.min(48, gridWidth * 0.08) : 0;
-          addPlacement(index, SCATTER_PADDING + stagger, currentTop);
-          currentTop += size.height + SCATTER_GAP;
-        });
-      }
-
-      return placements;
-    }
-
-    function resolveScatterOverlaps(placements, gridWidth) {
-      const maxLeft = function (width) {
-        return Math.max(SCATTER_PADDING, gridWidth - width - SCATTER_PADDING);
-      };
-
-      placements.forEach(function (placement, index) {
-        let attempts = 0;
-
-        while (attempts < 30) {
-          let moved = false;
-
-          for (let i = 0; i < placements.length; i++) {
-            if (i === index) continue;
-
-            const other = placements[i];
-            const selfRect = getWindowRect(placement.left, placement.top, placement.el);
-            const otherRect = {
-              left: other.left,
-              top: other.top,
-              width: other.width,
-              height: other.height,
-            };
-
-            if (!rectsOverlap(selfRect, otherRect, SCATTER_MIN_GAP)) continue;
-
-            const pushRight = other.left + other.width + SCATTER_MIN_GAP;
-            const pushDown = other.top + other.height + SCATTER_MIN_GAP;
-
-            if (pushRight + placement.width <= gridWidth - SCATTER_PADDING) {
-              placement.left = pushRight;
-            } else {
-              placement.top = pushDown;
-              placement.left = Math.min(placement.left, maxLeft(placement.width));
-            }
-
-            moved = true;
-            break;
-          }
-
-          if (!moved) break;
-          attempts++;
-        }
-
-        placement.left = Math.max(
-          SCATTER_PADDING,
-          Math.min(placement.left, maxLeft(placement.width))
-        );
-        placement.top = Math.max(SCATTER_PADDING, placement.top);
-      });
-
-      return placements;
-    }
-
-    function applyScatterPlacement(placement, index) {
-      const jitterX = (Math.random() - 0.5) * SCATTER_MAX_JITTER;
-      const jitterY = (Math.random() - 0.5) * SCATTER_MAX_JITTER;
-      const rotate =
-        placement.rotate + (Math.random() - 0.5) * (SCATTER_MAX_ROTATE * 0.4);
-
-      placement.el.style.left = Math.round(placement.left + jitterX) + "px";
-      placement.el.style.top = Math.round(placement.top + jitterY) + "px";
-      placement.el.style.zIndex = String(10 + index);
-      placement.el.style.setProperty("--bx-window-rotate", rotate.toFixed(1) + "deg");
-    }
-
-    function scatterAboutWindows() {
-      if (!scatterMq.matches) {
-        clearScatterStyles();
-        return;
-      }
-
-      aboutGrid.classList.add("bx-about-scatter");
-
-      const windows = getAboutWindows().filter(function (w) {
-        return !w.classList.contains("is-closed");
-      });
-      const gridWidth = aboutGrid.clientWidth;
-
-      windows.forEach(function (windowEl) {
-        void windowEl.offsetWidth;
-      });
-
-      let placements = buildScatterLayout(windows, gridWidth);
-      placements = resolveScatterOverlaps(placements, gridWidth);
-
-      placements.forEach(function (placement, index) {
-        applyScatterPlacement(placement, index);
-      });
-
-      updateScatterHeight();
-    }
-
-    function getPointerPosition(e) {
-      if (e.touches && e.touches.length) {
-        return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      }
-      return { x: e.clientX, y: e.clientY };
-    }
-
-    function endDrag() {
-      if (!dragState) return;
-      dragState.windowEl.classList.remove("is-dragging");
-      document.removeEventListener("pointermove", onDragMove);
-      document.removeEventListener("pointerup", endDrag);
-      document.removeEventListener("pointercancel", endDrag);
-      updateScatterHeight();
-      dragState = null;
-    }
-
-    function onDragMove(e) {
-      if (!dragState) return;
-      e.preventDefault();
-
-      const point = getPointerPosition(e);
-      const dx = point.x - dragState.startX;
-      const dy = point.y - dragState.startY;
-      const left = dragState.originLeft + dx;
-      const top = dragState.originTop + dy;
-
-      dragState.windowEl.style.left = left + "px";
-      dragState.windowEl.style.top = top + "px";
-      clampWindowPosition(dragState.windowEl);
-    }
-
-    getAboutWindows().forEach(function (windowEl) {
-      const titlebar = windowEl.querySelector(".bx-window-titlebar");
-      if (!titlebar) return;
-
-      titlebar.addEventListener("pointerdown", function (e) {
-        if (!scatterMq.matches) return;
-        if (e.button !== 0 && e.pointerType !== "touch") return;
-        if (e.target.closest(".bx-window-btn")) return;
-        if (windowEl.classList.contains("is-maximized") || windowEl.classList.contains("is-closed") || windowEl.classList.contains("is-minimized")) {
-          return;
-        }
-
-        bringWindowToFront(windowEl);
-        const point = getPointerPosition(e);
-        dragState = {
-          windowEl: windowEl,
-          startX: point.x,
-          startY: point.y,
-          originLeft: parseFloat(windowEl.style.left) || 0,
-          originTop: parseFloat(windowEl.style.top) || 0,
-        };
-
-        windowEl.classList.add("is-dragging");
-        document.addEventListener("pointermove", onDragMove);
-        document.addEventListener("pointerup", endDrag);
-        document.addEventListener("pointercancel", endDrag);
-        e.preventDefault();
-      });
-    });
-
-    scatterAboutWindows();
-    window.addEventListener("load", scatterAboutWindows);
-
-    scatterMq.addEventListener("change", scatterAboutWindows);
-    window.addEventListener("resize", function () {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () {
-        if (!scatterMq.matches) {
-          clearScatterStyles();
-          return;
-        }
-
-        if (!aboutGrid.classList.contains("bx-about-scatter")) {
-          scatterAboutWindows();
-          return;
-        }
-
-        scatterAboutWindows();
-      }, 120);
-    });
-  }
 })();
