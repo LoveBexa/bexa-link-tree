@@ -774,6 +774,55 @@ body.bx-has-maximized {
   .bx-about-span-2 {
     grid-column: span 2;
   }
+
+  .bx-page-about .bx-content-wide {
+    max-width: none;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .bx-about-grid.bx-about-scatter {
+    display: block;
+    position: relative;
+    width: 100%;
+    min-height: 72vh;
+    margin-bottom: 1rem;
+  }
+
+  .bx-about-grid.bx-about-scatter .bx-window {
+    position: absolute;
+    width: min(340px, 36vw);
+    margin-bottom: 0;
+    rotate: var(--bx-window-rotate, 0deg);
+    transition: box-shadow 0.15s ease;
+  }
+
+  .bx-about-grid.bx-about-scatter .bx-window:first-child {
+    width: min(380px, 40vw);
+  }
+
+  .bx-about-grid.bx-about-scatter .bx-window.is-dragging {
+    z-index: 200;
+    box-shadow:
+      0 0 0 1px oklch(0.2 0.06 280),
+      inset 0 0 0 1px oklch(0.3 0.08 285),
+      0 20px 56px rgba(80, 20, 160, 0.75),
+      0 8px 24px rgba(0, 0, 0, 0.8);
+  }
+
+  .bx-about-grid.bx-about-scatter .bx-window-titlebar {
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+  }
+
+  .bx-about-grid.bx-about-scatter .bx-window.is-dragging .bx-window-titlebar {
+    cursor: grabbing;
+  }
+
+  .bx-window.is-maximized {
+    rotate: 0deg;
+  }
 }
 
 .bx-window-compact {
