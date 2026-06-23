@@ -10,16 +10,16 @@ Plain HTML, CSS, and JavaScript. No build step, no framework, no dependencies.
 
 | Page | What you'll find |
 |------|------------------|
-| `index.html` | Main links — projects, communities, and places to find me |
-| `about.html` | A bit about me — profile, stats, bio, and what I'm working on |
+| `index.html` | Home — profile, stats, bio, and what I'm working on |
+| `links.html` | Main links — projects, communities, and places to find me |
 
 Both pages share the same starry background, window chrome, and bottom taskbar with social links.
 
 ## What's in here
 
 ```
-index.html      Home / link hub
-about.html      About me
+index.html      Home / about me
+links.html      Link hub
 styles.css      Shared styles
 script.js       Stars, START menu, window controls
 images/me.png   Profile photo
