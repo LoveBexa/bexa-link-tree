@@ -692,13 +692,13 @@ body.bx-has-maximized {
 }
 
 .bx-about-left {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
   min-width: 0;
 }
 
 .bx-about-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   min-width: 0;
 }
 
@@ -1102,20 +1102,20 @@ body.bx-has-maximized {
     padding: 0;
   }
 
-  .bx-about-right {
+  .bx-about-left {
     display: flex;
     flex-direction: column;
     min-height: 0;
   }
 
-  .bx-about-right .bx-window {
+  .bx-about-left .bx-window {
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
   }
 
-  .bx-about-right .bx-window-body {
+  .bx-about-left .bx-window-body {
     flex: 1;
     min-height: 0;
     display: flex;
@@ -1123,7 +1123,7 @@ body.bx-has-maximized {
     overflow: hidden;
   }
 
-  .bx-about-right .bx-prose-scroll {
+  .bx-about-left .bx-prose-scroll {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
