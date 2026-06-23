@@ -217,7 +217,7 @@ a[href] {
 
 .bx-title {
   font-family: var(--font-display);
-  font-size: clamp(1.4rem, 6vw, 2.2rem);
+  font-size: clamp(0.75rem, 4vw, 1.45rem);
   color: var(--bx-pink);
   text-shadow:
     3px 3px 0 rgba(80, 20, 120, 0.8),
@@ -1235,11 +1235,15 @@ body.bx-has-maximized {
   }
 
   .bx-title {
-    font-size: clamp(1.1rem, 5.2vw, 2.2rem);
+    font-size: clamp(1.3rem, 5vw, 1.5rem);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
   }
 
   .bx-title-long {
-    font-size: clamp(0.75rem, 4vw, 1.35rem);
+    font-size: clamp(0.75rem, 4vw, 1.45rem);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
   }
 
   .bx-window-titlebar {
