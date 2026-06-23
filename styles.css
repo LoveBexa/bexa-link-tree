@@ -565,6 +565,7 @@ body.bx-has-maximized {
   align-items: center;
   justify-content: center;
   border: 2px solid var(--bx-link-border);
+  border-radius: 0%;
   background: oklch(0.08 0.04 275);
 }
 
@@ -688,6 +689,17 @@ body.bx-has-maximized {
   display: grid;
   gap: 1rem;
   grid-template-columns: 1fr;
+}
+
+.bx-about-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.bx-about-right {
+  min-width: 0;
 }
 
 .bx-profile {
@@ -1041,7 +1053,38 @@ body.bx-has-maximized {
 @media (min-width: 720px) {
   .bx-about-grid {
     grid-template-columns: 1fr 1fr;
-    align-items: start;
+    align-items: stretch;
+  }
+
+  .bx-about-full {
+    grid-column: 1 / -1;
+  }
+
+  .bx-about-right {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .bx-about-right .bx-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .bx-about-right .bx-window-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .bx-about-right .bx-prose-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
   }
 }
 
