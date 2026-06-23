@@ -702,6 +702,21 @@ body.bx-has-maximized {
   min-width: 0;
 }
 
+.bx-profile-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bx-profile-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.bx-profile-traits {
+  margin-top: 0.75rem;
+}
+
 .bx-profile {
   display: flex;
   gap: 0.75rem;
@@ -1060,6 +1075,33 @@ body.bx-has-maximized {
     grid-column: 1 / -1;
   }
 
+  .bx-profile-layout {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .bx-profile-layout .bx-avatar {
+    width: clamp(180px, 28%, 280px);
+    height: auto;
+    align-self: flex-start;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0.5rem;
+  }
+
+  .bx-profile-layout .bx-avatar img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: center center;
+  }
+
+  .bx-profile-layout .bx-profile-content {
+    padding: 0;
+  }
+
   .bx-about-right {
     display: flex;
     flex-direction: column;
@@ -1117,15 +1159,27 @@ body.bx-has-maximized {
     display: none;
   }
 
-  .bx-profile {
+  .bx-profile-layout {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .bx-avatar {
+  .bx-profile-layout .bx-avatar {
     width: 100%;
     height: auto;
-    aspect-ratio: 1;
+    aspect-ratio: auto;
+    padding: 0.5rem;
+  }
+
+  .bx-profile-layout .bx-avatar img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .bx-profile-layout .bx-profile-content {
+    width: 100%;
+    padding: 0;
   }
 
   .bx-profile-body {
