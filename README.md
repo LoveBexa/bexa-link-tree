@@ -11,7 +11,9 @@ Plain HTML, CSS, and JavaScript. No build step, no framework, no dependencies.
 | Page | What you'll find |
 |------|------------------|
 | `index.html` | Home — profile, stats, bio, and what I'm working on |
+| `works.html` | Project portfolio — tiles with descriptions and links |
 | `links.html` | Main links — projects, communities, and places to find me |
+| `madhatgirls.html` | MadHatGirls community case study |
 
 Both pages share the same starry background, window chrome, and bottom taskbar with social links.
 
@@ -19,7 +21,9 @@ Both pages share the same starry background, window chrome, and bottom taskbar w
 
 ```
 index.html      Home / about me
+works.html      Works & projects
 links.html      Link hub
+madhatgirls.html  MadHatGirls case study
 styles.css      Shared styles
 script.js       Stars, START menu, window controls
 images/me.png   Profile photo
