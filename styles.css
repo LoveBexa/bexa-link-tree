@@ -968,6 +968,8 @@ body.bx-has-maximized {
    ========================================================================== */
 
 .bx-work-window {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   margin-bottom: 0;
   height: 100%;
@@ -975,18 +977,16 @@ body.bx-has-maximized {
 
 .bx-work-window .bx-window-body {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 0.35rem;
-}
-
-.bx-work-shot {
-  margin-bottom: 0.25rem;
+  gap: 0.25rem;
+  padding: 0.6rem 0.75rem;
 }
 
 .bx-work-desc {
   font-family: var(--font-copy);
   font-size: 1.1rem;
-  line-height: 1.45;
+  line-height: 1.4;
   color: var(--bx-text-dim);
   letter-spacing: 0.02em;
   margin: 0;
