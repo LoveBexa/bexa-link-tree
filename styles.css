@@ -1045,7 +1045,8 @@ body.bx-has-maximized {
 
 @media (min-width: 900px) {
   .bx-page-works .bx-content-wide,
-  .bx-page-case .bx-content-wide {
+  .bx-page-case .bx-content-wide,
+  .bx-page-philosophy .bx-content-wide {
     max-width: 1040px;
   }
 }
@@ -1294,6 +1295,73 @@ body.bx-has-maximized {
 .bx-prose-scroll {
   scrollbar-width: thin;
   scrollbar-color: var(--bx-window-border) transparent;
+}
+
+.bx-prose-philosophy .bx-prose-lede {
+  font-size: 1.35rem;
+  color: var(--bx-text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.bx-prose-philosophy em {
+  color: var(--bx-gold);
+  font-style: normal;
+}
+
+.bx-philosophy-grid {
+  margin-top: 1rem;
+}
+
+.bx-prose-tile {
+  font-size: 1.1rem;
+  line-height: 1.45;
+  color: var(--bx-text-dim);
+}
+
+.bx-prose-tile p + p {
+  margin-top: 0.5rem;
+}
+
+.bx-philosophy-window .bx-window-body {
+  gap: 0.35rem;
+}
+
+.bx-philosophy-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.bx-philosophy-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  line-height: 1.45;
+  color: var(--bx-text-body);
+}
+
+.bx-profile-philosophy-link {
+  margin-top: 0.85rem;
+}
+
+.bx-profile-philosophy-link .bx-about-cta {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-self: stretch;
+  font-size: 1rem;
+  padding: 0.35rem 0.65rem;
+}
+
+@media (min-width: 720px) {
+  .bx-profile-philosophy-link .bx-about-cta {
+    display: inline-flex;
+    width: auto;
+    align-self: flex-start;
+  }
 }
 
 .bx-page-works .bx-case-back {
